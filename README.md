@@ -18,3 +18,6 @@
 
 ##  Create the NFT and view it in opensea  
 
+![alt text](https://github.com/xiangpingjiang/mynft/blob/main/example/transfer.png) 
+
+### I can do the transfers in the Opensea testnet
