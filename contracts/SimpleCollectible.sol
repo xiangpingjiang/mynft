@@ -17,8 +17,16 @@ contract SimpleCollectible is ERC721 {
         return newItemId;
     }
 
-    function burnNFT(uint256 tokenId) public  {
-        _burn(tokenId);
+    
+    function burnNFT(uint tokenId) external {
+        address owner = ownerOf(tokenId);
+
+        _approve(owner, address(0), tokenId);
+
+        _balances[owner] -= 1;
+        delete _owners[tokenId];
+
+        emit Transfer(owner, address(0), tokenId);
     }
 
 }
