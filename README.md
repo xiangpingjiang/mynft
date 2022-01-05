@@ -2,6 +2,9 @@
 
 ## 1.Use openzeppelin/ERC721  Package write the contract
 
+[openzeppelin/ERC721](https://docs.openzeppelin.com/contracts/2.x/api/token/erc721#ERC721)
+
+
 ![alt text](https://github.com/xiangpingjiang/mynft/blob/main/example/ERC721.png) 
 
 
