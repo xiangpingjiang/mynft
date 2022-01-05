@@ -1,0 +1,11 @@
+{
+    "name": "PING",
+    "description": "xpj's first name",
+    "image": "https://ipfs.io/ipfs/Qmf4u5YDw5SVcAdG4o48Vvix1zAwebg5w7TYb3cEWP4Kad?filename=ping.png",
+    "attributes": [
+        {
+            "trait_type": "location",
+            "value": 1
+        }
+    ]
+}

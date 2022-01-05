@@ -1,0 +1,11 @@
+{
+    "name": "XIANG",
+    "description": "xpj's last name",
+    "image": "https://ipfs.io/ipfs/QmbNYuDHeMdvfMTFcr1guHiD1Mwt7nszThv8ZCw9QRCRpH?filename=xiang.png",
+    "attributes": [
+        {
+            "trait_type": "location",
+            "value": 1
+        }
+    ]
+}
