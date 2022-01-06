@@ -14,6 +14,7 @@ contract NftMarket is ERC721 {
   // define class struct
    struct Class {
     uint256 classId;
+    uint256 tokenNumber;
     string className;
     address payable admin;
     bool transferable;
@@ -42,6 +43,15 @@ contract NftMarket is ERC721 {
   mapping(string => bool) public classNameExists;
 
 
+  // map Crypto_art's token id to Crypto_art
+  mapping(uint256 => Crypto_art) public allCrypto_arts;
+  // check if token name exists
+  mapping(string => bool) public tokenNameExists;
+  // check if color exists
+  mapping(string => bool) public colorExists;
+  // check if token URI exists
+  mapping(string => bool) public tokenURIExists;
+
 
   // initialize contract while deployment with contract's collection name and token
   constructor() ERC721("My NftMarket") {
@@ -51,7 +61,7 @@ contract NftMarket is ERC721 {
 
 
   //  create a new Class
-  function createClass(string memory className,bool memory transferable,bool memory burnable,bool memory mintable,bool memory frozen) external  {
+  function createClass(string memory className,bool memory transferable,bool memory burnable,bool memory mintable,bool memory frozen) public  {
     // check if this fucntion caller is not an zero address account
     require(msg.sender != address(0));
     // increment counter
@@ -63,6 +73,7 @@ contract NftMarket is ERC721 {
     // creat a new Class (struct) and pass in new values
     Class memory newClass = Class(
     classCounter,
+    0,
     className,
     msg.sender,
     transferable,
@@ -90,8 +101,9 @@ contract NftMarket is ERC721 {
     require(c.frozen == false);
     // creat a new Class (struct) and pass in new values
     Class memory newClass = Class(
-    classCounter,
-    className,
+    c.classId,
+    c.tokenNumber
+    c.className,
     msg.sender,
     transferable,
     burnable,
@@ -103,6 +115,55 @@ contract NftMarket is ERC721 {
 
   }
 
+  // mint a new Crypto art
+  function mintCrypto_art(uint256 memory _classId,string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) public {
+    // check if this fucntion caller is not an zero address account
+    require(msg.sender != address(0));
+    Class memory c = allClass[_classId]
+    // check the admin of the class
+    require(c.admin == msg.sender);
+    // increment tokenNumber
+    c.tokenNumber ++;
+    // check if a token exists with the above token id => incremented counter
+    require(!_exists(c.tokenNumber));
 
+    // loop through the colors passed and check if each colors already exists or not
+    for(uint i=0; i<_colors.length; i++) {
+      require(!colorExists[_colors[i]]);
+    }
+    // check if the token URI already exists or not
+    require(!tokenURIExists[_tokenURI]);
+    // check if the token name already exists or not
+    require(!tokenNameExists[_name]);
+
+    // mint the token
+    _mint(msg.sender, c.tokenNumber);
+    // set token URI (bind token id with the passed in token URI)
+    _setTokenURI(c.tokenNumber, _tokenURI);
+
+    // loop through the colors passed and make each of the colors as exists since the token is already minted
+    for (uint i=0; i<_colors.length; i++) {
+      colorExists[_colors[i]] = true;
+    }
+    // make passed token URI as exists
+    tokenURIExists[_tokenURI] = true;
+    // make token name passed as exists
+    tokenNameExists[_name] = true;
+
+    // creat a new crypto boy (struct) and pass in new values
+    Crypto_art memory newCrypto_art = Crypto_art(
+    _classId,
+    c.tokenNumber,
+    _name,
+    _tokenURI,
+    msg.sender,
+    msg.sender,
+    address(0),
+    _price,
+    0,
+    true);
+    // add the token id and it's crypto boy to all crypto boys mapping
+    allCryptoBoys[c.tokenNumber] = newCrypto_art;
+  }
  
 }
