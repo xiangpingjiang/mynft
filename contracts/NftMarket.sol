@@ -171,5 +171,20 @@ contract NftMarket is ERC721 {
     require(c.burnable == true);
     _burn(_tokenId)
 
+  }
+
+  function transferToken(address from,address to,uint256 memory _tokenId) public {
+    // check if this fucntion caller is not an zero address account
+    require(msg.sender != address(0));
+    Crypto_art memory art = allCrypto_arts[_tokenId]
+    Class memory c = allClass[art.classId]
+    // check the admin of the class
+    require(c.admin == msg.sender);
+    // check the transferable  of the class
+    require(c.transferable == true);
+    safeTransferFrom(from,to,_tokenId)
+
   } 
+
+
 }
