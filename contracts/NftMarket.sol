@@ -56,6 +56,7 @@ contract NftMarket is ERC721 {
   constructor() ERC721("My NftMarket") {
     marketName = name();
     classCounter = 0;
+    cryptoArtCounter = 0;
   }
 
 
