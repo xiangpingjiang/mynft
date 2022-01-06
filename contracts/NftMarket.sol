@@ -9,12 +9,13 @@ contract NftMarket is ERC721 {
   string public marketName;
   // total number of class created
   uint256 public classCounter;
+  // total number of crypto arts minted
+  uint256 public cryptoArtCounter;
 
 
   // define class struct
    struct Class {
     uint256 classId;
-    uint256 tokenNumber;
     string className;
     address payable admin;
     bool transferable;
@@ -47,13 +48,11 @@ contract NftMarket is ERC721 {
   mapping(uint256 => Crypto_art) public allCrypto_arts;
   // check if token name exists
   mapping(string => bool) public tokenNameExists;
-  // check if color exists
-  mapping(string => bool) public colorExists;
   // check if token URI exists
   mapping(string => bool) public tokenURIExists;
 
 
-  // initialize contract while deployment with contract's collection name and token
+  // initialize contract
   constructor() ERC721("My NftMarket") {
     marketName = name();
     classCounter = 0;
@@ -73,7 +72,6 @@ contract NftMarket is ERC721 {
     // creat a new Class (struct) and pass in new values
     Class memory newClass = Class(
     classCounter,
-    0,
     className,
     msg.sender,
     transferable,
@@ -102,7 +100,6 @@ contract NftMarket is ERC721 {
     // creat a new Class (struct) and pass in new values
     Class memory newClass = Class(
     c.classId,
-    c.tokenNumber
     c.className,
     msg.sender,
     transferable,
@@ -115,36 +112,30 @@ contract NftMarket is ERC721 {
 
   }
 
-  // mint a new Crypto art
-  function mintCrypto_art(uint256 memory _classId,string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) public {
+  // mint a new Crypto art token
+  function mintCrypto_art(uint256 memory _classId,string memory _name, string memory _tokenURI, uint256 _price) public {
     // check if this fucntion caller is not an zero address account
     require(msg.sender != address(0));
     Class memory c = allClass[_classId]
     // check the admin of the class
     require(c.admin == msg.sender);
+    // check the mintable  of the class
+    require(c.mintable == true);
     // increment tokenNumber
-    c.tokenNumber ++;
+    cryptoArtCounter ++;
     // check if a token exists with the above token id => incremented counter
-    require(!_exists(c.tokenNumber));
+    require(!_exists(cryptoArtCounter));
 
-    // loop through the colors passed and check if each colors already exists or not
-    for(uint i=0; i<_colors.length; i++) {
-      require(!colorExists[_colors[i]]);
-    }
     // check if the token URI already exists or not
     require(!tokenURIExists[_tokenURI]);
     // check if the token name already exists or not
     require(!tokenNameExists[_name]);
 
     // mint the token
-    _mint(msg.sender, c.tokenNumber);
+    _mint(msg.sender, cryptoArtCounter);
     // set token URI (bind token id with the passed in token URI)
-    _setTokenURI(c.tokenNumber, _tokenURI);
+    _setTokenURI(cryptoArtCounter, _tokenURI);
 
-    // loop through the colors passed and make each of the colors as exists since the token is already minted
-    for (uint i=0; i<_colors.length; i++) {
-      colorExists[_colors[i]] = true;
-    }
     // make passed token URI as exists
     tokenURIExists[_tokenURI] = true;
     // make token name passed as exists
@@ -153,7 +144,7 @@ contract NftMarket is ERC721 {
     // creat a new crypto boy (struct) and pass in new values
     Crypto_art memory newCrypto_art = Crypto_art(
     _classId,
-    c.tokenNumber,
+    cryptoArtCounter,
     _name,
     _tokenURI,
     msg.sender,
@@ -162,8 +153,22 @@ contract NftMarket is ERC721 {
     _price,
     0,
     true);
-    // add the token id and it's crypto boy to all crypto boys mapping
-    allCryptoBoys[c.tokenNumber] = newCrypto_art;
+    // add the token id and it's crypto_art to allCrypto_arts mapping
+    allCrypto_arts[cryptoArtCounter] = newCrypto_art;
   }
- 
+
+  // Burn a Crypto art token
+
+  function burnToken(uint256 memory _tokenId) public {
+    // check if this fucntion caller is not an zero address account
+    require(msg.sender != address(0));
+    Crypto_art memory art = allCrypto_arts[_tokenId]
+    Class memory c = allClass[art.classId]
+    // check the admin of the class
+    require(c.admin == msg.sender);
+    // check the burnable  of the class
+    require(c.burnable == true);
+    _burn(_tokenId)
+
+  } 
 }
