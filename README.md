@@ -9,7 +9,7 @@
 
 ## 2.The main  contract  
 
-![alt text](https://github.com/xiangpingjiang/mynft/blob/main/example/contract.png) 
+![alt text](https://github.com/xiangpingjiang/mynft/blob/main/example/contract.png "contract") 
 
 
 ## 3.The  Etherscan result after deploying contract to Rinkeby testnet  
